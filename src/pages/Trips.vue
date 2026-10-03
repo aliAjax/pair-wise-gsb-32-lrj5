@@ -7,23 +7,31 @@
         <el-option label="全部状态" value="all" />
         <el-option v-for="item in TRIP_STATUS_OPTIONS" :key="item.value" :label="item.label" :value="item.value" />
       </el-select>
+      <el-tag v-if="sync.unresolvedCount" type="danger">{{ sync.unresolvedCount }} 处待裁决，裁决前费用/分享冻结</el-tag>
+      <el-tag v-else-if="!sync.online" type="warning">断网中 · 改动会存成分叉包</el-tag>
     </div>
     <EmptyState v-if="!tripStore.filteredTrips.length" title="还没有旅行计划" :description="messages.emptyTrips" />
     <section class="grid">
-      <TripCard v-for="trip in tripStore.filteredTrips" :key="trip.id" :trip="trip" @open="open" @remove="tripStore.removeTrip" />
+      <TripCard v-for="trip in tripStore.filteredTrips" :key="trip.id" :trip="trip" :open-conflicts="conflictCount(trip.id)" @open="open" @remove="tripStore.removeTrip" />
     </section>
+    <ConflictCenter v-if="sync.unresolvedCount" />
   </main>
 </template>
 <script setup lang="ts">
 import { useRouter } from 'vue-router';
 import TripCard from '../components/common/TripCard.vue';
 import EmptyState from '../components/common/EmptyState.vue';
+import ConflictCenter from '../components/common/ConflictCenter.vue';
 import { useTripStore } from '../stores/tripStore';
+import { useSyncStore } from '../stores/syncStore';
 import { TRIP_STATUS_OPTIONS } from '../constants/trip';
 import { messages } from '../constants/messages';
 const router = useRouter();
 const tripStore = useTripStore();
+const sync = useSyncStore();
 function create() { router.push('/trip/' + tripStore.createTrip()); }
 function open(id: string) { router.push('/trip/' + id); }
+function conflictCount(tripId: string) {
+  return sync.unresolvedConflicts.filter((conflict) => conflict.trip_id === tripId).length;
+}
 </script>
-
