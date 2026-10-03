@@ -4,7 +4,7 @@ import { STORAGE_KEYS } from '../constants/storageVersion';
 import { loadLocal, saveLocal } from '../utils/storage';
 
 export const useThemeStore = defineStore('theme', {
-  state: () => ({ theme: loadLocal<MapThemeName>(STORAGE_KEYS.theme, 'fresh') }),
+  state: () => ({ theme: loadLocal<MapThemeName>(STORAGE_KEYS.theme, 'fresh').data }),
   getters: { current: (state) => MAP_THEMES[state.theme] },
   actions: {
     setTheme(theme: MapThemeName) {

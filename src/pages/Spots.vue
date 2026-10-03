@@ -22,9 +22,10 @@ import { messages } from '../constants/messages';
 const tripStore = useTripStore();
 const spotStore = useSpotStore();
 const dayPlanStore = useDayPlanStore();
-function addSpot(id: string) {
-  const tripId = tripStore.trips[0]?.id || tripStore.createTrip();
-  dayPlanStore.addSpot(tripId, id, 1);
+async function addSpot(id: string) {
+  const price = spotStore.spots.find((spot) => spot.id === id)?.price || 0;
+  const tripId = tripStore.trips[0]?.id || (await tripStore.createTrip());
+  await dayPlanStore.addSpot(tripId, id, 1, price);
 }
 </script>
 

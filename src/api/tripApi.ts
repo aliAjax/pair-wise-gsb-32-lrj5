@@ -3,7 +3,6 @@ import { STORAGE_KEYS } from '../constants/storageVersion';
 import { loadLocal, saveLocal } from '../utils/storage';
 
 export const tripApi = {
-  list: () => loadLocal<Trip[]>(STORAGE_KEYS.trips, []),
+  list: () => loadLocal<Trip[]>(STORAGE_KEYS.trips, []).data,
   save: (trips: Trip[]) => saveLocal(STORAGE_KEYS.trips, trips),
 };
-
